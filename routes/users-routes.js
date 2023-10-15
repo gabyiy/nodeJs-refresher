@@ -1,18 +1,26 @@
+
+
 const express = require("express");
 
-//accesam metoda router
+const {check}= require("express-validator")
+
+
+const usersController = require("../controllers/users-controler")
+
 const router = express.Router();
 
-//folosim router pentru a exporta rutele
 
-router.get("/",(req ,res,next)=>{
+router.get("/",usersController.getUsers)
+router.get("/:uid",usersController.getUserById);
+router.post("/",[check("name").not().isEmpty()],usersController.createUser );
+router.patch("/:uid",[check("name").not().isEmpty()],usersController.updateUser)
+router.delete("/:uid",usersController.deleteUser)
+router.post("/signup",[check("name").not().isEmpty(),check("password").not().isEmpty().isLength({min:6}),check("email").normalizeEmail().isEmail()],usersController.signup);
+router.post("/login",usersController.login);
 
-    console.log("It works");
-
-    res.json({message: "It works"});
-
-});
 
 
-//aici exportam tot ce este legat de router si poate fi accesat in app
-module.exports= router;
+
+
+
+module.exports =router;
